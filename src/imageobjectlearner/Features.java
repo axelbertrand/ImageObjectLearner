@@ -1,21 +1,22 @@
+package imageobjectlearner;
 
 public class Features {
-	/**
-	 * Fill in x with image features
-	 * @param x vector of image features
-	 * @param gray grayscale image
-	 */
-	public static void allFeatures(double[] x, int[][] gray) {
-		int i = 0;  // index into the x vector of feature values
-		double[] a = histogramOfOrientedGradients(gray, 8, 4, 4);
-		for (double v : a) {
-			x[i++] = v;
-		}
-		a = localBinaryPattern(gray);
-		for (double v : a) {
-			x[i++] = v;
-		}
-	}
+    /**
+     * Fill in x with image features
+     * @param x vector of image features
+     * @param gray grayscale image
+     */
+    public static void allFeatures(double[] x, int[][] gray) {
+            int i = 0;  // index into the x vector of feature values
+            double[] a = histogramOfOrientedGradients(gray, 8, 4, 4);
+            for (double v : a) {
+                    x[i++] = v;
+            }
+            a = localBinaryPattern(gray);
+            for (double v : a) {
+                    x[i++] = v;
+            }
+    }
 	
     /**
      * For a 64x64 image this will return a double array with length
@@ -29,8 +30,7 @@ public class Features {
      * @param cellSize cellSize*cellSize pixels in each cell
      * @return the histogram of oriented gradients (look it up)
      */
-    public static double[] histogramOfOrientedGradients(int[][] gray,
-            int numberOfBins, int blockSize, int cellSize) {
+    public static double[] histogramOfOrientedGradients(int[][] gray, int numberOfBins, int blockSize, int cellSize) {
         double binWidth = (2.0 * Math.PI) / numberOfBins; // 0 to 360
 
         int width = gray[0].length;
@@ -94,8 +94,7 @@ public class Features {
         int blocksCountX = (int) Math.floor(cellCountX / (double) blockSize);
         int blocksCountY = (int) Math.floor(cellCountY / (double) blockSize);
 
-        double[] blocks = new double[blocksCountX * blocksCountY * blockSize
-                * blockSize * numberOfBins];
+        double[] blocks = new double[blocksCountX * blocksCountY * blockSize * blockSize * numberOfBins];
         int d = 0; // index into blocks
         for (int i = 0; i < blocksCountX; i++) {
             for (int j = 0; j < blocksCountY; j++) {
@@ -109,8 +108,7 @@ public class Features {
                 // for each cell in the block
                 for (int x = 0; x < blockSize; x++) {
                     for (int y = 0; y < blockSize; y++) {
-                        double[] histogram = histograms[startBlockX
-                                + x][startBlockY + y];
+                        double[] histogram = histograms[startBlockX + x][startBlockY + y];
 
                         // Copy all histograms to the block vector
                         for (int k = 0; k < histogram.length; k++) {
@@ -171,8 +169,4 @@ public class Features {
         
         return g;
     }
-
-	
-	
-
 }
