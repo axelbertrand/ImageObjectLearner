@@ -4,12 +4,32 @@ import java.io.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.regex.Pattern;
 
 
 public class ImageObjectLearner {
+    
+    private static final ArrayList<String> categories = new ArrayList<>();
+    private static final Pattern fileType = Pattern.compile(".*.jpg$");
 
 	
     public static void main (String[] argv) throws IOException {
+        
+        categories.add("bricks");
+        categories.add("buildings");
+        categories.add("face");
+        categories.add("fire");
+        categories.add("flower");
+        categories.add("mountains");
+        categories.add("pebbles");
+        categories.add("pillars");
+        categories.add("road");
+        categories.add("rocks");
+        categories.add("sand");
+        categories.add("scales");
+        categories.add("snow");
               
         int[][] red = new int[64][64];
         int[][] green = new int[64][64];
@@ -25,25 +45,41 @@ public class ImageObjectLearner {
         double[][] weights = new double[13][2048 + 256];
 
         // ################ Learn ###########################
-        
         // For all categories, use the learn function to update the weights
-        for(int category = 0; category < 1; category++) // ## how can we do this ?
-        {
-            learn(category, red, green, blue, gray, x, weights);
+        for (String cat : categories) {
+            learn(categories.indexOf(cat), red, green, blue, gray, x, weights);
             // it doesn't work, it's just an example
-        }
+        } // ## how can we do this ?
         
         // ##################################################
 
-        // compute the prediction and update the weights (for neural network based classification)
-        //...
-        //
+        
+        // ############ File to classify ####################
+        File file = new File("../learningDataset/buildings/1315.jpg");
+        BufferedImage img = ImageIO.read(file);
+
+        // insert the RGB values into the red green blue arrays
+        Color c;
+        for (int i = 0; i < 64; i++) {
+                for (int j = 0; j < 64; j++) {
+                        c = new Color(img.getRGB(i,j));
+                        red[i][j] = c.getRed();
+                        green[i][j] = c.getGreen();
+                        blue[i][j] = c.getBlue();
+                }
+        }
+
+        // At this point, red green blue are filled with the next image.
+        grayScale(red, green, blue, gray);
+        // Fill in the x vector.
+        Features.allFeatures(x, gray);
+        // #################################################
         
         int prediction = NeuralNetworkLearner.makePrediction(weights, x);
         //NeuralNetworkLearner.updateWeights(weights, x, prediction, 0); // Need to find what is the target
         // I don't think we need/are able to update the weights here
         
-        System.out.println("Catégorie "+prediction);
+        System.out.println("Category '"+categories.get(prediction)+"'");
     }
 
 
@@ -80,11 +116,18 @@ public class ImageObjectLearner {
      * @throws java.io.IOException 
      */
     public static void learn(int category, int[][] red, int[][] green, int[][] blue, int [][] gray, double[] x, double[][] w) throws IOException {
+        File folder = new File("../learningDataset/"+categories.get(category));
+        File[] images = folder.listFiles();
         
         // For all images in the given category, we compute the grayscale and search its features
-        for(int a = 0; a < 1; a++) // ## need to change this loop
+        for(File file : images)
         {
-            File file = new File("../learningDataset/buildings/1315.jpg");
+            System.out.println("File : ../learningDataset/"+categories.get(category)+"/"+file.getName());
+            if(!fileType.matcher(file.getName()).matches())
+            {
+                break;
+            }
+            //File file = new File("../learningDataset/buildings/1315.jpg");
             BufferedImage img = ImageIO.read(file);
 
             // insert the RGB values into the red green blue arrays
