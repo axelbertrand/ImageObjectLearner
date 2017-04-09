@@ -24,7 +24,7 @@ public class ImageObjectLearner {
         // One weight vector for each of 13 categories
         double[][] weights = new double[13][2048 + 256];
 
-        File file = new File("../trainingDataset/building.jpg");
+        File file = new File("../learningDataset/buildings/1315.jpg");
         BufferedImage img = ImageIO.read(file);
 
         // insert the RGB values into the red green blue arrays
@@ -49,6 +49,8 @@ public class ImageObjectLearner {
         
         int prediction = NeuralNetworkLearner.makePrediction(weights, x);
         NeuralNetworkLearner.updateWeights(weights, x, prediction, 0); // Need to find what is the target
+        
+        System.out.println("Catégorie "+prediction);
     }
 
 
