@@ -55,7 +55,7 @@ public class ImageObjectLearner {
 
         
         // ############ File to classify ####################
-        File file = new File("../learningDataset/buildings/1315.jpg");
+        File file = new File("../learningDataset/buildings/1316.jpg");
         BufferedImage img = ImageIO.read(file);
 
         // insert the RGB values into the red green blue arrays
@@ -122,7 +122,7 @@ public class ImageObjectLearner {
         // For all images in the given category, we compute the grayscale and search its features
         for(File file : images)
         {
-            System.out.println("File : ../learningDataset/"+categories.get(category)+"/"+file.getName());
+            System.out.println("==============================\nFile : learningDataset/"+categories.get(category)+"/"+file.getName());
             if(!fileType.matcher(file.getName()).matches())
             {
                 break;
@@ -153,6 +153,7 @@ public class ImageObjectLearner {
             {
                 int prediction = NeuralNetworkLearner.makePrediction(w, x);
                 
+                System.out.println("x: "+x+"\nw: "+w+"\nPredic: "+prediction+"\nCatego: "+category);
                 if(prediction != category) {
                     NeuralNetworkLearner.updateWeights(w, x, prediction, category);
                 }
